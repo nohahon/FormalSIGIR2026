@@ -357,15 +357,6 @@ def df_evaluate(df, text_column, output_suffix='', avail_columns=['module_name']
             print(df['full_match_R@1: '+output_suffix].mean())
             print(df['full_match_R@5: '+output_suffix].mean())
             print(df['full_match_R@10: '+output_suffix].mean())
-
-        # if 'name' in avail_columns:
-        #     df['name_match_lean_search'+output_suffix] = df.apply(lambda x: [match_cond_name(xi, x) for xi in x['lean_search'+output_suffix]], axis=1)
-        #     df['name_match_R@1'+output_suffix] = df.name_match_lean_search.apply(lambda x: int(x[0])>0)
-        #     df['name_match_R@5'+output_suffix] = df.name_match_lean_search.apply(lambda x: sum(x[:5])>0)
-        #     df['name_match_R@10'+output_suffix] = df.name_match_lean_search.apply(lambda x: sum(x[:10])>0)
-        #     print(df['name_match_R@1'+output_suffix].mean())
-        #     print(df['name_match_R@5'+output_suffix].mean())
-        #     print(df['name_match_R@10'+output_suffix].mean())
         return df
 
     df = _get_scores(df,'',avail_columns)
@@ -375,6 +366,7 @@ def df_evaluate(df, text_column, output_suffix='', avail_columns=['module_name']
     return df
 
 def evaluate_zbmath_no_books(test=False,retriever='lean_search'):
+  #Builds and evaluate zbmath 
     nonbooks_w_zbl = match_bibrefs_to_bib_file()
 
     all_kinds_ids = []
@@ -391,7 +383,7 @@ def evaluate_zbmath_no_books(test=False,retriever='lean_search'):
                                 for key, value in nonbooks_w_zbl_inv.items()])
 
 
-    #collection of abstracts. Can be obtained by querying zbmath.org
+    #collection of abstracts. Can be obtained by querying api.zbmath.org
     zb_docs_df = pd.read_csv(os.path.join(HOME,'leandocs.csv'),
                               encoding='utf-8',delimiter=',',dtype=str)
 
@@ -616,5 +608,6 @@ if __name__=="__main__":
     #### Stacks
     print("Evaluating Stacks Project")
     print(evaluate_stacks_project(test,retriever))
+
 
 
