@@ -3,7 +3,10 @@ import json
 from concurrent.futures import as_completed
 from requests_futures.sessions import FuturesSession
 import requests
+import os
 
+# change if needed.
+HOME = os.getcwd()
 tag_url_prefix = 'https://stacks.math.columbia.edu/data/tag/'
 tag_structure_suffix = '/structure'
 tags_content_suffix = '/content/full'
@@ -40,4 +43,5 @@ with FuturesSession() as session:
 d = {'content':[future.result().content for future in futures]}
 content_df = pd.DataFrame(d)
 structure_df['content'] = content_df
-structure_df.to_csv('~/stacks_project.csv',index=False)
+
+structure_df.to_csv(os.path.join(HOME,'stacks_project.csv',index=False)
