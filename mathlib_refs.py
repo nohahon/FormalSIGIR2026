@@ -12,14 +12,12 @@ import argparse
 
 
 # Configuration #DELETE!!
-HOME = "C://Users/ngi/"
+HOME = os.getcwd()
 MATHLIB4_LOC = os.path.join(HOME,'mathlib4')
-USER_AGENT = "Test Theorem Retrieval (noah.giessing@fiz-karlsruhe.de)"
+USER_AGENT = "Test Theorem Retrieval (your@username.com)"
 REQUEST_DELAY = 1  # seconds between requests to avoid rate limiting
 WIKI_API_URL = "https://en.wikipedia.org/w/api.php"
 SE_API_URL = "https://api.stackexchange.com/2.3/questions"
-LEAN_FINDER_URL = "delta-lab-ai/Lean-Finder"
-LEAN_EXPLORE_API_KEY =  "NUwu0wt0ruXasVp9NIYh2CjZwg1YSS8R-TPpUSYFS_c"
 WIKIDATA_PREFIX = 'https://www.wikidata.org/wiki/'
 HEADERS = {"User-Agent": USER_AGENT}
 mathlib_url = 'https://github.com/leanprover-community/mathlib4/tree/ed96f50f75b1f89c4561f2ba2d837eb169052094/'
@@ -269,7 +267,7 @@ def lean_search(df,column, new_col_name = 'lean_search'):
         'accept': 'application/json',
         # Already added when you pass json=
         # 'Content-Type': 'application/json',
-        'User-Agent': 'LeanSearchClientTest/1.0 (noah.giessing@fiz-karlsruhe.de)',
+        'User-Agent': USER_AGENT,
     }
     for i in range(len(texts)//10+1):
         json_data = {
@@ -284,60 +282,6 @@ def lean_search(df,column, new_col_name = 'lean_search'):
             print(e)
     df[new_col_name] = response_jsons_full
     return df
-
-# #Lean Explore
-# async def lean_explore(df_list, new_col_name = 'lean_explore'):
-#     responses = []
-#     client = ApiClient(api_key=LEAN_EXPLORE_API_KEY)
-#     queries = df_list
-#     for query in queries:
-#         try:
-#             response = await client.search(
-#                 query=query,
-#                 limit=10,
-#                 packages=["Mathlib"],
-#             )
-#             responses.append(response)
-#         except:
-#             responses.append("error")
-#     return responses
-
-# async def lean_explore(
-#         df,
-#         column: str,
-#         new_col_name: str = "lean_explore",
-#         limit: int = 10,
-#         concurrency: int | None = 20,  # None = unlimited, 20 is usually safe
-# ):
-#     client = ApiClient(api_key=LEAN_EXPLORE_API_KEY)
-#
-#     queries = df[column].tolist()  # faster and safer than Series iteration
-#
-#     # Optional: limit concurrent requests to avoid hammering the API
-#     semaphore = asyncio.Semaphore(concurrency) if concurrency else None
-#
-#     async def search_one(query):
-#         if semaphore:
-#             async with semaphore:
-#                 return await client.search(query=query, limit=limit, packages=["Mathlib"])
-#         else:
-#             return await client.search(query=query, limit=limit, packages=["Mathlib"])
-#
-#     tasks = [search_one(q) for q in queries]
-#
-#     results = await asyncio.gather(*tasks, return_exceptions=True)
-#
-#     # Convert exceptions → "error" string, keep successful responses unchanged
-#     processed = []
-#     for r in results:
-#         if isinstance(r, Exception):
-#             processed.append("error")
-#         else:
-#             processed.append(r)
-#
-#     df = df.copy()  # avoid mutating the input if you don't want to
-#     df[new_col_name] = processed
-#     return df
 
 def match_cond_code_and_module(lean_search_item, df_row):
     lean_search_result = lean_search_item['result']
@@ -362,9 +306,6 @@ def match_cond_module(lean_search_item, df_row):
     else:
         return [df_row['module_name'].index(lean_search_result['module_name'])]
 
-
-# def match_cond_name(lean_search_item, df_row):
-#     return lean_search_item['result'].get('name') == df_row['decls']
 
 def recalls(lean_search_results, df_row, match_condition,n):
     recalled = []
@@ -412,14 +353,6 @@ def df_evaluate(df, text_column, output_suffix='', avail_columns=['module_name']
             print(df['full_match_R@5: '+output_suffix].mean())
             print(df['full_match_R@10: '+output_suffix].mean())
 
-        # if 'name' in avail_columns:
-        #     df['name_match_lean_search'+output_suffix] = df.apply(lambda x: [match_cond_name(xi, x) for xi in x['lean_search'+output_suffix]], axis=1)
-        #     df['name_match_R@1'+output_suffix] = df.name_match_lean_search.apply(lambda x: int(x[0])>0)
-        #     df['name_match_R@5'+output_suffix] = df.name_match_lean_search.apply(lambda x: sum(x[:5])>0)
-        #     df['name_match_R@10'+output_suffix] = df.name_match_lean_search.apply(lambda x: sum(x[:10])>0)
-        #     print(df['name_match_R@1'+output_suffix].mean())
-        #     print(df['name_match_R@5'+output_suffix].mean())
-        #     print(df['name_match_R@10'+output_suffix].mean())
         return df
 
     df = _get_scores(df,'',avail_columns)
@@ -445,6 +378,8 @@ def evaluate_zbmath_no_books(test=False,retriever='lean_search'):
                                 for key, value in nonbooks_w_zbl_inv.items()])
 
 
+    if not os.path.exists(os.path.join(HOME,'leandocs.csv')):
+      print("Need to build 'leandocs.csv' first!")
     #collection of abstracts. Can be obtained by querying zbmath.org
     zb_docs_df = pd.read_csv(os.path.join(HOME,'leandocs.csv'),
                               encoding='utf-8',delimiter=',',dtype=str)
@@ -597,9 +532,6 @@ def evaluate_1000_theorems(test=False,retriever='lean_search'):
     theorems_df = theorems_df.join(theorems_project_df,how='outer',on='wikidata_qid')
     formal_proofs_df = theorems_df.dropna(subset=['decl','decls','url'],axis='rows',how='all')
     theorems_code_sources = _parse_1000_theorems_page()
-    ### Delete!!
-    theorems_code_sources['Q3229335']['https://github.com/leanprover-community/mathlib4/blob/b8dad038b1b3a05b77d6884b15b8db03ec01dca1/Mathlib/Analysis/Complex/BorelCaratheodory.lean#L105-L121']=\
-        "/-- **Borel-Carathéodory theorem**.If `f` is analytic on the open ball `‖z‖ < R` and satisfies `(f z).re < M` for all such `z`, then `‖f z‖ ≤ 2 * M * ‖z‖ / (R - ‖z‖) + ‖f 0‖ * (R + ‖z‖) / (R - ‖z‖)` for all `‖z‖ < R`. -/public theorem borelCaratheodory (hM : 0 < M) (hf : DifferentiableOn ℂ f (ball 0 R))\n(hf₁ : Set.MapsTo f (ball 0 R) {z | z.re < M}) (hR : 0 < R) (hz : z ∈ ball 0 R) :\n‖f z‖ ≤ 2 * M * ‖z‖ / (R - ‖z‖) + ‖f 0‖ * (R + ‖z‖) / (R - ‖z‖) := by\nhave hfz : ‖f z - f 0‖ ≤ 2 * (M + ‖f 0‖) * ‖z‖ / (R - ‖z‖) := by\n apply borelCaratheodory_zero (by positivity) (by fun_prop) ?_ hR hz (by simp)\n intro x hx\n simp only [Set.mem_setOf_eq, sub_re]\n calc (f x).re - (f 0).re < M - (f 0).re := by gcongr; exact hf₁ hx\n _ ≤ M + ‖f 0‖ := by linarith [neg_le_abs (f 0).re, abs_re_le_norm (f 0)]\n have h_denom_ne : R - ‖z‖ ≠ 0 := by linarith [mem_ball_zero_iff.mp hz]\n calc ‖f z‖ ≤ ‖f z - f 0‖ + ‖f 0‖ := norm_le_norm_sub_add _ _\n _ ≤ 2 * (M + ‖f 0‖) * ‖z‖ / (R - ‖z‖) + ‖f 0‖ := by gcongr\n _ = 2 * M * ‖z‖ / (R - ‖z‖) + ‖f 0‖ * (R + ‖z‖) / (R - ‖z‖) := by field_simp; ring"
     theorems_code_sources = {key:value for key,value in theorems_code_sources.items() if value}
     module_names = {key:[val_key[val_key.index('Mathlib/'):] for val_key in value.keys()]
                     for key,value in theorems_code_sources.items()  if value.keys()}
@@ -673,4 +605,5 @@ if __name__=="__main__":
     #### Stacks
     print("Evaluating Stacks Project")
     print(evaluate_stacks_project(test,retriever))
+
 
