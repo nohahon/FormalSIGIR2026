@@ -2,3 +2,5 @@ bibtexparser==1.1.0
 beautifulsoup4==4.12.3
 mwparserfromhell==0.7.2
 pyyaml==6.0.1
+pandas==2.2.0
+openai==2.17.0
