@@ -20,7 +20,9 @@ git clone https://github.com/leanprover-community/mathlib4.git
 ```shell
 python -m stacks
 ```
-## Create leandocs.csv by querying api.zbmath.org with the ZBL_IDs in lean_zbl_ids.csv
+## Create leandocs.csv
+
+by querying api.zbmath.org with the ZBL_IDs in lean_zbl_ids.csv
 
 ## Usage
 
