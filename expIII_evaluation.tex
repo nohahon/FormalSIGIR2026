@@ -1,0 +1,74 @@
+Manual evaluation of the results of Experiment III (index number is the row number in the csv file):
+
+% By Hamid:
+\begin{enumerate}
+    \item 09GK, score 2: OK. \\
+    Formal proof is one line using existing packages, while informal proof proves in detail. 
+    \item 01Z2, score 4: OK\\
+    Semantically the same, structurally, only one step has a different proof (Lean more general category theoretical)
+    \item 01Z3, score 3:  OK\\
+    semantically same, structurally the key intermediate proofs are different, as Lean uses a general category theory package
+    \item 01Z4, score 2: NOT OK, perhaps should be 1\\
+    Different proosf content with a little overlap, different structures
+    \item 01Z4, score 2: OK\\
+    Neither the same statement, not similar proof semantics, nor the same proof structure
+    \item 01ZC, score2: OK\\
+    Informal proof is an equivalence of three statements, while Lean proves only one part of the one of the statements via existing packages.
+    \item 01Z5, score 4: OK\\
+    Lean uses packages to prove the main statement, while informal proof details things and contains more steps.
+    \item 01Z6, score 2: OK\\
+    semantically goals have overlap, though not exactly the same. Proof structures/steps are irrelevant.
+    \item 01OX, score 4: OK\\
+    Same semantics and structure. Same steps except one that Lean uses packages
+    \item 01OY, score 4:  OK\\
+    Same semantics and structur of proof, though one step has differnt proof.\\
+    \item 01OZ, score 4: OK\\
+    Same semantical and structural proof. Proof of One step looks different: Lean uses a package, informally a lemma is used to prove the step
+    \item 01P0, score 4: OK\\
+    Same semantical and structural proof. Proof of One step looks different: Lean uses a package, informally a lemma is used to prove the step
+    \item 0BA8, score 2:  OK\\
+    Prove the same thing, the core argument is the same, but Lean and informal proofs differ structurally.
+    \item 03GP, score 2, Perhaps better 1\\
+    Not the same statement, not the same proof.
+    \item 0AXN, score 4: OK\\
+    Same statement, different proof, as each formal/informal uses different lemma
+    \item 01QF, score 4: OK\\
+    Same proof semantics and structure, except that one step is proved using different Package/Lemma
+    \item 054K, score 5: Perhaps 4?\\
+    Same proof steps, one step proofs slightly differs, as Lean proves in two statements while informally proved by a lemma.
+    \item 04XU, score 1; OK\\
+    entirely different proof structures
+    \item 01U1, score 5: OK\\
+    Same proof structure. One tiny difference in one step: Lean uses a package that is a more general result than informally used/required sentence.\\
+    \item 0BN4, score 2: OK\\
+    Lean only one final part of formal proof
+    \item 002O, score 2: OK\\
+    Lean is one statement out of several equivalences
+\end{enumerate}
+
+
+% By Noah:
+% \begin{enumerate}
+%     \item Line 200 (09HQ): score 2/5 low alignment score is accurate because the proofs are quite different. because of this, their proof steps are obviously missing each other. we're not seeing that the statement being proved is somewhat different, as per the comment.
+%     \item Line 220 (0CKL): score 4/5 high alignment score seems accurate, but there is some help provided in the comments of the formal proof, to be fair. Again, missing elements are diagnosed in both cases, is this going to happen every time?
+%     \item Line 240 (00L3): The model gives 1/5, which is accurate (the proofs are very different), but it also thinks that the statements being proven are different, since it has no idea what the augmented proof proves. (I would also fail this test, given the proof in stacks). Note that the lean statement only concerns the fourth part of the lemma, see the comment.
+%     \item Line 260 (030H): The model gives 3/5, which reflects that both proceed by choosing transcendence bases. Maybe the score would be higher if it had known that the one of the Lean lemmas actually refers to the union being a transcendence basis. (It is really unfortunate that we can't deliver information on used lemmas) I'm getting the feeling that the Missing Steps thing doesn't say that much, because it's always YesYes?
+%     \item Line 280 (0539): Score 2/5. This seems accurate as the one-liner first implication is dealt with the same way, and the other direction is quite different and uses different assumptions (see comment column). Note that the Lean proof has commented lines.
+%     \item Line 300 (00H8): Score 5/5. Indeed, the chain of arguments here is better preserved than in the proofs before. Of course, the Lean proof gives more details, but I can spot no significant deviation. In this case, there is also a no/no for added details.
+%     \item Line 320 (00H6): Score 2/5.  Here, the model is wrong (but true to its written evaluation). It supposes that the proofs are proving something different, but they are actually not. This is probably due to the larger part of the informal proof proving part two of the statement. (see comment column) But it also seems like the model does not understand what the formal proof is proving.
+%     \item Line 340 (0BR8): Score 4/5.
+%     The model accurately recognizes that the proofs are basically identically, but that the informal proof also proves something else (see comment Column)). The reasoning for both missing arguments is a bit iffy, but again, I feel like that part does not express much.
+%     \item Line 360 (00IA): Score 2/5. 
+%     This time there are no comments and indeed, the proofs don't follow each other based on my understanding after invoking Zorn's Lemma. 
+%     \item Line 381 (sic!) (0379): Score 4/5. This is a classical case of the Lean proof outsourcing to a Lemma (besides the fact that an assumption is skipped.) The use of the lemma shortens the proof considerably, however.
+%     \item Line 210 (09HK): Score 2/5. Again, the Lean proof reduces most of the proof to a lemma, which, this time, proves a more general statement. The model seems to recognize this, hence the lower score.
+%     \item Line 231 (sic!) (00DV): Score 2/5. Same as above, but lower score.
+%     \item Line 250 (09GJ): Score 2/5. Again, Lean outsources most of the proof to another lemma and proves a more general result. 
+%     \item Line 270 (0564): Score 3/5. Lean outsources the proof and proves only one part. However, more steps are shared.
+%     \item Line 290 (00DS): Score 2/5. The proof strategy seems to be entirely different between the formal and the informal proof. The informal statement is $\neg a\to\neg b$, whereas the formal statement is $b\leftrightarrow a$ (and its proof doesn't go by contradiction.) I think this should be 1/5.
+%     \item Line 310 (0B52): Score 2/5. Again, Lean outsources the proof to a lemma which is slightly stronger and proves only one part, see comment column.
+%     \item Line 330 (031I): Score 2/5. Here, the same statement is proven, but the Lean proof again uses a lemma which is a presumably more general version of itself, whereas the informal proof makes explicit calculations.
+%     \item Line 350 (0BIL): Score 2/5. Same statement is proven (a three-way TFAE), but Lean proves $1\to3\to2\to1$, whereas the informal proof goes $3\leftrightarrow2,2\leftrightarrow1$. Also, Lean's $1\to3$ is a lemma, same as its $2\to1$ (which at least uses the same contraposition of the informal proof. 
+%     \item Line 370 (09YD): Score 3/5. Same statement is proven, but the proof strategies are/seem to be entirely different. Could also be 3/5?
+%     \item Line 390 (0B31): Score 1/5. Only one part is proven, Lean refers to a proof about embeddings.
+% \end{enumerate}
