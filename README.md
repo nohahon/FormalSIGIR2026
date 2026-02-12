@@ -39,7 +39,7 @@ Make sure that your function works the same way as the default lean_search:
 That is, given a dataframe as input with specified input column, it appends a column named retriever + output_suffix.
 Entries in that column MUST be of the form list["result":{"module_name":list[],"signature":str,"name":list[],...},...]
 
-To evaluate run
+To evaluate your retrieval function on all datasets, run
 ```shell
 python mathlib_refs.py test your_retriever
 ```
